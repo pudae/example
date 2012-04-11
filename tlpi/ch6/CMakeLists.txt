@@ -5,3 +5,6 @@ add_definitions(-g -Wall)
 add_executable(mem_segments
 	mem_segments.cpp)
 
+add_executable(longjmp
+	longjmp.cpp)
+
