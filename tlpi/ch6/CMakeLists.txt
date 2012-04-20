@@ -8,3 +8,6 @@ add_executable(mem_segments
 add_executable(longjmp
 	longjmp.cpp)
 
+add_executable(6_1
+	6_1.cpp)
+
