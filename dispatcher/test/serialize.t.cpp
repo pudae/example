@@ -15,7 +15,7 @@ void deserialize(const std::string&, T* msg)
 
 auto deserializer = [] (TypeId id, const std::string& buffer)
 {
-  return Serializer<MsgHolder>::deserialize_tmp(static_cast<int>(id), buffer);
+  return Serializer<MsgHolder>::deserialize_tmp(id, buffer);
 };
 
 BOOST_AUTO_TEST_CASE(test_deserializer)

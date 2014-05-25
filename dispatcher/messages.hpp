@@ -16,12 +16,12 @@ enum class TypeId
 };
 
 template <>
-struct Trait<MsgA> { static int id() { return static_cast<int>(TypeId::kMsgA); } };
+struct Trait<MsgA> { static TypeId id() { return TypeId::kMsgA; } };
 
 template <>
-struct Trait<MsgB> { static int id() { return static_cast<int>(TypeId::kMsgB); } };
+struct Trait<MsgB> { static TypeId id() { return TypeId::kMsgB; } };
 
 template <>
-struct Trait<MsgC> { static int id() { return static_cast<int>(TypeId::kMsgC); } };
+struct Trait<MsgC> { static TypeId id() { return TypeId::kMsgC; } };
 
 typedef boost::variant<MsgA, MsgB, MsgC> MsgHolder;

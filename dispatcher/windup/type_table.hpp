@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 #include "boost/noncopyable.hpp"
 #include "boost/variant.hpp"
@@ -54,7 +54,7 @@ private:
     return p->second;
   }
 
-  std::unordered_map<TypeId, MsgHolder> type_table_;
+  std::map<TypeId, MsgHolder> type_table_;
 };
   
 }  // windup 
