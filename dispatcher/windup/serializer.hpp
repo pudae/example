@@ -11,8 +11,10 @@ template <typename MsgHolder>
 class Serializer
 {
 public:
-  /// @todo  "TypeId" 타입을 T타입 기반으로 알아내기
-  static MsgHolder deserialize_tmp(int id, const std::string& buffer)
+  typedef typename MsgHolder::types Types;
+  typedef decltype(Trait<typename boost::mpl::front<Types>::type>::id()) TypeId;
+
+  static MsgHolder deserialize_tmp(TypeId id, const std::string& buffer)
   {
     auto msg_holder = TypeTable<MsgHolder>::type(id);
     return boost::apply_visitor(Impl(buffer), msg_holder);

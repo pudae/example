@@ -15,13 +15,15 @@ template <typename MsgHolder>
 class TypeTable : private boost::noncopyable
 {
 public:  
-  /// @todo  "TypeId" 타입을 T타입 기반으로 알아내기
-  static const MsgHolder& type(int id) { return instance()[id]; }
+  typedef typename MsgHolder::types Types;
+  typedef decltype(Trait<typename boost::mpl::front<Types>::type>::id()) TypeId;
+
+  static const MsgHolder& type(TypeId id) { return instance()[id]; }
 
 private:
   TypeTable() 
   { 
-    boost::mpl::for_each<typename MsgHolder::types>(TableBuilder(*this));
+    boost::mpl::for_each<Types>(TableBuilder(*this));
   }
 
   struct TableBuilder
@@ -32,7 +34,7 @@ private:
     void operator()(T t)
     {
       MsgHolder msg = t;
-      auto v = std::make_pair(static_cast<int>(Trait<T>::id()), t);
+      auto v = std::make_pair(Trait<T>::id(), t);
       obj.type_table_.insert(v);
     }
 
@@ -45,14 +47,14 @@ private:
     return s_instance; 
   }
 
-  const MsgHolder& operator[](int id) const 
+  const MsgHolder& operator[](TypeId id) const 
   { 
     auto p = type_table_.find(id);
     assert(type_table_.end() != p);
     return p->second;
   }
 
-  std::unordered_map<int, MsgHolder> type_table_;
+  std::unordered_map<TypeId, MsgHolder> type_table_;
 };
   
 }  // windup 
