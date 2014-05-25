@@ -1,25 +1,30 @@
+#pragma once
+
 #include "boost/variant.hpp"
+
+namespace windup 
+{
 
 template <typename Handler>
 class Dispatcher
 {
 public:
-  Dispatcher(Handler& h) : imple_(h) { }
+  Dispatcher(Handler& h) : impl_(h) { }
 
   template <typename MsgHolder>
   void operator()(MsgHolder holder)
-  { boost::apply_visitor(imple_, holder);  }
+  { boost::apply_visitor(impl_, holder);  }
 
 private:
-  struct Imple : public boost::static_visitor<void>
+  struct Impl : public boost::static_visitor<void>
   {
-    Imple(Handler &h) :  handler_(h) { }
+    Impl(Handler &h) : handler_(h) { }
   
     template <typename Msg> 
     void operator()(Msg msg) const { handler_(msg);}      
   
     Handler& handler_;
-  } imple_;
+  } impl_;
 };
 
 template <typename Handler>
@@ -27,3 +32,5 @@ Dispatcher<Handler> make_dispatcher(Handler handler)
 { 
   return Dispatcher<Handler>(handler); 
 }
+  
+}  // windup 

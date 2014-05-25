@@ -1,7 +1,10 @@
 #include "boost/test/unit_test.hpp"
 
-#include "id_to_type.hpp"
+#include "type_table.hpp"
+#include "serializer.hpp"
 #include "messages.hpp"
+
+using namespace windup;
 
 template <typename T>
 void deserialize(const std::string&, T* msg)

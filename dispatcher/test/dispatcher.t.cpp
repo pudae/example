@@ -6,6 +6,8 @@
 #include "dispatcher.hpp"
 #include "messages.hpp"
 
+using namespace windup;
+
 namespace 
 {
 
