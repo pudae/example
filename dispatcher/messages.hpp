@@ -2,7 +2,7 @@
 
 #include "boost/variant.hpp"
 
-#include "trait.hpp"
+#include "windup/trait.hpp"
 
 struct MsgA { static const char* name() { return "MsgA"; } };
 struct MsgB { static const char* name() { return "MsgB"; } };

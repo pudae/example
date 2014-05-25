@@ -3,7 +3,7 @@
 #define BOOST_TEST_MODULE MyTest
 #include "boost/test/unit_test.hpp"
 
-#include "dispatcher.hpp"
+#include "windup/dispatcher.hpp"
 #include "messages.hpp"
 
 using namespace windup;

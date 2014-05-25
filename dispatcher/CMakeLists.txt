@@ -20,7 +20,7 @@ add_definitions(
 )
 
 add_executable(test_dispatcher
-  ${PRJ_ROOT}/test/id_to_type.t.cpp
+  ${PRJ_ROOT}/test/type_table.t.cpp
   ${PRJ_ROOT}/test/dispatcher.t.cpp
   ${PRJ_ROOT}/test/serialize.t.cpp
 )

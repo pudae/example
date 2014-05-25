@@ -1,7 +1,8 @@
 #include "boost/test/unit_test.hpp"
 
-#include "type_table.hpp"
-#include "serializer.hpp"
+#include "windup/type_table.hpp"
+#include "windup/serializer.hpp"
+
 #include "messages.hpp"
 
 using namespace windup;
