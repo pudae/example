@@ -41,8 +41,6 @@ private:
     TypeTable& obj;
   };
 
-  // TODO (pudae@neowiz.com) use nifty counter
-  // http://en.wikibooks.org/wiki/More_C++_Idioms/Nifty_Counter
   static TypeTable& instance() 
   { 
     static TypeTable s_instance;
