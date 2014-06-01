@@ -1,0 +1,3 @@
+Name, Birthplace, Birth year
+Home Simpson, Saskatechewan*, 1981
+David Abrahams, Princeton\, Nj, 1964
