@@ -23,3 +23,7 @@ add_executable(example1
   ${PRJ_ROOT}/example1.cpp
 )
 
+add_executable(example4
+  ${PRJ_ROOT}/example4.cpp
+)
+
