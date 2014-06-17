@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 
 #include "expected.hpp"
 
@@ -32,6 +33,16 @@ public:
     f_ = std::bind(railway::bind(f), std::bind(f_, std::placeholders::_1));
     return *this;
   } 
+
+  template <typename F,
+            typename std::enable_if<
+                std::is_void<typename std::result_of<F>::type>::value>::type* = nullptr>
+  Rail& operator>>(F&& f)
+  {
+     f_ = std::bind(railway::try_catch(railway::tee(f)), 
+                    std::bind(f_, std::placeholders::_1));
+     return *this;
+  }
 
   /// TODO : solve ambiguous problem... 
   // Rail& operator>>(std::function<std::string(std::string)> f)

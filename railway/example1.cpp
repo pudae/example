@@ -99,7 +99,7 @@ void railway_approach(std::string s)
   auto f = 
       railway::Rail(validate_email) >>
       validate_name >>
-      railway::map(to_lower) >>
+      to_lower >>
       railway::try_catch(railway::tee(update_database)) >>
       send_response;
 
