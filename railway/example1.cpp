@@ -79,20 +79,20 @@ void imperative_approach(std::string s)
 ////////////////////////////////////////////////////////////////////////////////
 /// railway
 ////////////////////////////////////////////////////////////////////////////////
-void railway_approach_test(std::string s)
-{
-  auto result = 
-      railway::bind(send_response)(
-          railway::bind(railway::try_catch(railway::tee(update_database)))(
-              railway::bind(railway::map(to_lower))(
-                  railway::bind(validate_name)(
-                      validate_email(s)))));
-
-  if (!result)
-    std::cerr << "fail:" << result.error() << std::endl;
-  else
-    std::cout << "success:" << result.value() << std::endl; 
-}
+// void railway_approach_test(std::string s)
+// {
+//   auto result = 
+//       railway::bind(send_response)(
+//           railway::bind(railway::try_catch(railway::tee(update_database)))(
+//               railway::bind(railway::map(to_lower))(
+//                   railway::bind(validate_name)(
+//                       validate_email(s)))));
+// 
+//   if (!result)
+//     std::cerr << "fail:" << result.error() << std::endl;
+//   else
+//     std::cout << "success:" << result.value() << std::endl; 
+// }
 
 void railway_approach(std::string s)
 {
@@ -100,7 +100,7 @@ void railway_approach(std::string s)
       railway::Rail(validate_email) >>
       validate_name >>
       to_lower >>
-      railway::try_catch(railway::tee(update_database)) >>
+      update_database >>
       send_response;
 
   auto result = f(s);
