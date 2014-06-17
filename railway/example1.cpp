@@ -98,10 +98,10 @@ void railway_approach(std::string s)
 {
   auto f = 
       railway::Rail(validate_email) >>
-      railway::bind(validate_name) >>
+      validate_name >>
       railway::map(to_lower) >>
       railway::try_catch(railway::tee(update_database)) >>
-      railway::bind(send_response);
+      send_response;
 
   auto result = f(s);
 

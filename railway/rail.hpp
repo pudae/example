@@ -27,6 +27,26 @@ public:
     return *this;
   } 
 
+  Rail& operator>>(std::function<Expected<std::string>(std::string)> f)
+  {
+    f_ = std::bind(railway::bind(f), std::bind(f_, std::placeholders::_1));
+    return *this;
+  } 
+
+  /// TODO : solve ambiguous problem... 
+  // Rail& operator>>(std::function<std::string(std::string)> f)
+  // {
+  //   f_ = std::bind(railway::try_catch(f), std::bind(f_, std::placeholders::_1));
+  //   return *this;
+  // } 
+
+  // Rail& operator>>(std::function<void(std::string)> f)
+  // {
+  //   f_ = std::bind(railway::try_catch(railway::tee(f)), 
+  //                  std::bind(f_, std::placeholders::_1));
+  //   return *this;
+  // } 
+
   Expected<std::string> operator()(std::string s) { return f_(s); }
 
 private:
