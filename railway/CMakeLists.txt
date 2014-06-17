@@ -13,10 +13,6 @@ add_definitions(
   -std=c++0x
 )
 
-add_executable(railway 
-  main.cpp
-)
-
 add_executable(example1
   example1.cpp
 )
