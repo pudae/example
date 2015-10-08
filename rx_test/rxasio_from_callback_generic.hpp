@@ -25,7 +25,7 @@ struct value_type;
 template <>
 struct value_type<>
 {
-  typedef void type;
+  typedef nullptr_t type;
 };
 
 template <typename T>
@@ -43,43 +43,6 @@ struct value_type<Head, Tail...>
 template <typename... T>
 using value_t = typename value_type<T...>::type;
 
-inline void test()
-{
-  {
-    // using param_t = std::tuple<int, std::string, double>;
-  	// std::cout << std::tuple_size<param_t>::value << std::endl;
-  	// callback_t<param_t>::type f = [](boost::system::error_code ec, int  i, std::string s, double d) {
-  	//   std::cout << ec.message() << ", " << i << ", " << s << ", " << d << std::endl;
-  	// };
-
-  	// f(boost::system::error_code(), 0, "hahaha", 0.3);
-  }
-
-  {
-    callback_t<> f = [](boost::system::error_code ec) {
-      std::cout << ec.message() << std::endl;
-  	};
-    f(boost::system::error_code());
-  }
-
-
-  {
-    callback_t<int> f = [](boost::system::error_code ec, int i) {
-      std::cout << ec.message() << ", " << i << std::endl;
-  	};
-    f(boost::system::error_code(), 1);
-  }
-
-  {
-    callback_t<int, double> f = [](boost::system::error_code ec, int i, double d) {
-      std::cout << ec.message() << ", " << i << ", " << d << std::endl;
-  	};
-    f(boost::system::error_code(), 1, 2.3);
-  }
-}
-
-#define AAA
-#ifdef AAA
 template <typename... Types>
 class from_asio
 {
@@ -87,19 +50,38 @@ public:
   using value_t     = value_t<Types...>;
   using callback_t  = callback_t<Types...>;
   using op_t        = std::function<void(callback_t)>;
+
+  boost::asio::strand strand_;
   op_t op_;
 
-  from_asio(op_t op)
-    : op_(op)
+  from_asio(boost::asio::io_service& io_service, op_t op)
+    : strand_(io_service), op_(op)
   { }
 
   rxcpp::observable<value_t> operator()()
   {
     auto op = op_;
+    auto strand = strand_;
 
     return rxcpp::observable<>::create<value_t>(
-      [op](rxcpp::subscriber<value_t> s) {
+      [op, strand](rxcpp::subscriber<value_t> s) {
         op(handler(s));
+        auto on_dispose = [] {
+          std::cout << "on_dispose" << std::endl;
+        };
+        s.add(on_dispose);
+    }).as_dynamic();
+  }
+
+  template <typename... T>
+  rxcpp::observable<value_t> operator()(T... t)
+  {
+    auto op = op_;
+    auto strand = strand_;
+
+    return rxcpp::observable<>::create<value_t>(
+      [=](rxcpp::subscriber<value_t> s) {
+        op(std::forward<T>(t)..., handler(s));
         auto on_dispose = [] {
           std::cout << "on_dispose" << std::endl;
         };
@@ -110,9 +92,25 @@ public:
 private:
   struct handler
   {
+    rxcpp::subscriber<value_t> subscriber;
+
     handler(rxcpp::subscriber<value_t> subscriber)
       : subscriber(subscriber)
     { }
+
+    void operator()(boost::system::error_code ec)
+    {
+      if (ec)
+      {
+        // TODO : on_error 
+        subscriber.on_completed();
+      }
+      else
+      {
+        subscriber.on_next(nullptr);
+        subscriber.on_completed();
+      }
+    }
 
     template <typename T>
     void operator()(boost::system::error_code ec, T t)
@@ -144,10 +142,13 @@ private:
       }
     }
 
-    rxcpp::subscriber<value_t> subscriber;
+    template <typename Function>
+    friend void asio_handler_invoke(Function function, handler* context)
+    {
+      function();
+    }
   };
 };
-#endif
 
 }
 }
