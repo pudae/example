@@ -2,10 +2,9 @@
 
 #include "boost/asio.hpp"
 #include "boost/date_time.hpp"
-#include "rxcpp/rx-scheduler.hpp"
+#include "rxcpp/rx.hpp"
 
 namespace rxasio {
-namespace schedulers {
 
 class strand_worker;
 
@@ -89,8 +88,7 @@ public:
 
 inline rxcpp::schedulers::scheduler make_io_service(boost::asio::io_service& io_service)
 {
-  return rxcpp::schedulers::make_scheduler<rxasio::schedulers::io_service>(io_service);
+  return rxcpp::schedulers::make_scheduler<rxasio::io_service>(io_service);
 }
 
-}
 }
