@@ -1,75 +1,63 @@
 #include <iostream>
 #include <future>
-#include <memory>
 #include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "waitable.h"
+#include "use_boost_future.h"
+#include "coroutine_traits.h"
 
 namespace asio = boost::asio;
 using boost::asio::ip::tcp;
 
-class session
-  : public std::enable_shared_from_this<session>
+auto do_echo(tcp::socket socket) -> boost::shared_future<void>
 {
-public:
-  session(tcp::socket socket)
-    : socket_(std::move(socket))
-  {
-  }
-
-  auto start() -> std::future<void>
-  {
-    auto self(shared_from_this());
-    try
-    {
-      for (;;)
-      {
-        auto read_bytes = await socket_.async_read_some(asio::buffer(data_, max_length), myco::use_waitable);
-        await asio::async_write(socket_, asio::buffer(data_, read_bytes), myco::use_waitable);
-      }
-    }
-    catch (std::exception& ex)
-    {
-      std::cout << "Exception: " << ex.what() << "\n";
-    }
-  }
-
-  tcp::socket socket_;
-  enum { max_length = 1024 };
-  char data_[max_length];
-};
-
-class server
-{
-public:
-  server(asio::io_service& io_service, short port)
-    : acceptor_(io_service, tcp::endpoint(tcp::v4(), port))
-  {
-  }
-
-  auto do_accept() -> std::future<void>
+  try
   {
     for (;;)
     {
-      tcp::socket socket(acceptor_.get_io_service());
-      await acceptor_.async_accept(socket, myco::use_waitable);
-      std::make_shared<session>(std::move(socket))->start();
+      const std::size_t max_length = 1024;
+      char data[max_length];
+
+      auto read_bytes = await socket.async_read_some(asio::buffer(data, max_length), myco::use_boost_future);
+      await asio::async_write(socket, asio::buffer(data, read_bytes), myco::use_boost_future);
     }
   }
+  catch (const std::exception& e)
+  {
+    std::cout << "Exception: " << e.what() << std::endl;
+  }
+}
 
-  tcp::acceptor acceptor_;
-};
-
-int start_echo_server(int port)
+auto do_accept(asio::io_service& io_service, short port) -> boost::shared_future<void>
 {
-  std::cout << "start echo server\n";
+  tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), port));
+  for (;;)
+  {
+    tcp::socket socket(io_service);
+    await acceptor.async_accept(socket, myco::use_boost_future);
+    do_echo(std::move(socket));
+  }
+}
+
+auto do_tick(asio::io_service& io_service, int ms) -> boost::shared_future<void>
+{
+  asio::deadline_timer t(io_service);
+  for (;;)
+  {
+    t.expires_from_now(boost::posix_time::milliseconds(ms));
+    await t.async_wait(myco::use_boost_future);
+    std::cout << "tick \n";
+  }
+}
+
+int start_echo_server(short port)
+{
+  std::cout << "start simple echo server\n";
   try
   {
     asio::io_service io_service;
-
-    server s(io_service, port);
-    s.do_accept();
-
+    do_accept(io_service, port);
+    do_tick(io_service, 1000);
     io_service.run();
   }
   catch (std::exception& e)

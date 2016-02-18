@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <thread>
+#include <future>
 #include <experimental/generator>
 #include <experimental/resumable>
 
@@ -22,7 +24,7 @@ int main()
   for (auto c : hello("Hello, coroutines\n"))
     std::cout << c;
 
-  start_simple_echo_server(20001);
+  start_echo_server(20001);
 
   return 0;
 }
