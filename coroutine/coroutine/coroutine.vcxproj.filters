@@ -33,6 +33,9 @@
     <ClInclude Include="use_boost_future.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="test_coroutine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="echo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_coroutine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
