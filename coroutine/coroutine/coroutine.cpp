@@ -19,13 +19,16 @@ auto hello(const char* p)
   }
 }
 
+void test_expected();
+
 int main()
 {
   std::cout << "Hello, world\n";
   for (auto c : hello("Hello, coroutines\n"))
     std::cout << c;
 
-  test_coroutine();
+  test_expected();
+  // test_coroutine();
 
   start_echo_server(20001);
 

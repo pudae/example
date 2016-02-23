@@ -36,6 +36,9 @@
     <ClInclude Include="test_coroutine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="expected.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_coroutine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_expected.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
