@@ -6,19 +6,22 @@
 #include "expected.h"
 
 myco::expected<int> my_div(int a, int b) {
-  if (0 == b)
-    throw std::logic_error("divide by zero");
-  return a / b;
+  try {
+    if (0 == b)
+  	  throw std::logic_error("divide by zero");
+  	return a / b;
+  } catch (...) {
+    return std::current_exception();
+  }
 }
 
 myco::expected<int> throw_if_odd(int a) {
   try {
     if (a % 2)
   	  throw std::runtime_error("is odd!!");
-    return myco::expected<int>(a);
-  }
-  catch (...) {
-    return myco::expected<int>(std::current_exception());
+    return a;
+  } catch (...) {
+    return std::current_exception();
   }
 }
 
